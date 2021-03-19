@@ -2,7 +2,7 @@ import {debounceTime, throttleTime, share, filter, mergeMap} from 'rxjs/operator
 import { merge, Observable } from 'rxjs';
 import createLogicAction$ from './createLogicAction$';
 import { confirmProps } from './utils';
-
+// manual changes
 // confirm custom Rx build imports
 confirmProps(Observable, ['merge'], 'Observable');
 confirmProps(Observable.prototype, [

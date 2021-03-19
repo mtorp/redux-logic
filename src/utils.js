@@ -1,5 +1,5 @@
 const symbolObservable = (Symbol && Symbol.observable) || '@@observable';
-
+// manual changes
 // eslint-disable-next-line import/prefer-default-export
 export function confirmProps(obj, arrProps, objName = '') {
   arrProps.forEach(x => {

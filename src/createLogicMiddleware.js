@@ -2,7 +2,7 @@ import {scan, takeWhile, map} from 'rxjs/operators';
 import { Observable, Subject, BehaviorSubject } from 'rxjs'; // eslint-disable-line no-unused-vars
 import wrapper from './logicWrapper';
 import { confirmProps, stringifyType } from './utils';
-
+// manual changes
 // confirm custom Rx build imports
 confirmProps(Observable.prototype, [
   'filter', 'map', 'scan', 'takeWhile', 'toPromise'

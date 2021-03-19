@@ -1,7 +1,7 @@
 import * as Rx from 'rxjs'
 import expect from 'expect-legacy';
 import { createLogic, createLogicMiddleware, configureLogic } from '../src/index';
-
+// manual changes
 describe('createLogicMiddleware-throttle', () => {
   before(() => {
     configureLogic({ warnTimeout: 0 });

@@ -1,7 +1,7 @@
 import * as Rx from 'rxjs'
 import expect from 'expect-legacy';
 import { createLogic, createLogicMiddleware } from '../src/index';
-
+// manual changes
 describe('createLogicMiddleware-process', () => {
   describe('[logicA] process dispatch()', () => {
     let monArr = [];
