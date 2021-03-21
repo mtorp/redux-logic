@@ -2,7 +2,7 @@ import {take, defaultIfEmpty, takeUntil, tap, mergeAll} from 'rxjs/operators';
 import { timer, from, throwError, of, Observable, Subject } from 'rxjs';
 import isPromise from 'is-promise';
 import { confirmProps, isObservable } from './utils';
-
+// manual changes
 // confirm custom Rx build imports
 confirmProps(Observable, ['fromPromise', 'of', 'throw', 'timer'],
              'Observable');

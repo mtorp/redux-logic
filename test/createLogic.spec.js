@@ -2,7 +2,7 @@ import {take, map, delay} from 'rxjs/operators';
 import expect from 'expect-legacy';
 import * as Rx from 'rxjs'
 import { createLogic, createLogicMiddleware, configureLogic } from '../src/index';
-
+// manual changes
 const NODE_ENV = process.env.NODE_ENV;
 
 describe('createLogic', () => {
