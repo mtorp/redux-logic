@@ -1,10 +1,5 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/throttleTime';
+import {debounceTime, throttleTime, share, filter, mergeMap} from 'rxjs/operators';
+import { merge, Observable } from 'rxjs';
 import createLogicAction$ from './createLogicAction$';
 import { confirmProps } from './utils';
 
@@ -24,11 +19,11 @@ export default function logicWrapper(logic, store, deps, monitor$) {
     .concat(cancelType || []);
 
   const debouncing = (debounce) ?
-        act$ => act$.debounceTime(debounce) :
+        act$ => act$.pipe(debounceTime(debounce)) :
         act$ => act$;
 
   const throttling = (throttle) ?
-        act$ => act$.throttleTime(throttle) :
+        act$ => act$.pipe(throttleTime(throttle)) :
         act$ => act$;
 
   const limiting = act =>
@@ -36,23 +31,21 @@ export default function logicWrapper(logic, store, deps, monitor$) {
 
   return function wrappedLogic(actionIn$) {
     // we want to share the same copy amongst all here
-    const action$ = actionIn$.share();
+    const action$ = actionIn$.pipe(share());
 
     const cancel$ = (cancelTypes.length) ?
-          action$.filter(action => matchesType(cancelTypes, action.type)) :
+          action$.pipe(filter(action => matchesType(cancelTypes, action.type))) :
           Observable.create((/* obs */) => {}); // shouldn't complete
 
     // types that don't match will bypass this logic
-    const nonMatchingAction$ = action$
-      .filter(action => !matchesType(type, action.type));
+    const nonMatchingAction$ = action$.pipe(filter(action => !matchesType(type, action.type)));
 
     const matchingAction$ =
-      limiting(action$.filter(action => matchesType(type, action.type)))
-        .mergeMap(action =>
+      limiting(action$.pipe(filter(action => matchesType(type, action.type)))).pipe(mergeMap(action =>
           createLogicAction$({ action, logic, store, deps,
-                               cancel$, monitor$ }));
+                               cancel$, monitor$ })));
 
-    return Observable.merge(
+    return merge(
       nonMatchingAction$,
       matchingAction$
     );
