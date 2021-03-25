@@ -242,7 +242,9 @@ function getInvalidOptions(options, validOptions) {
 /* if type is a fn call toString() to get type, redux-actions
   if array, then check members */
 function typeToStrFns(type) {
-  if (Array.isArray(type)) { return type.pipe(map(x => typeToStrFns(x))); }
+  if (Array.isArray(type)) { 
+      return type.pipe(map(x => typeToStrFns(x))); 
+  }
   return (typeof type === 'function') ?
     type.toString() :
     type;
