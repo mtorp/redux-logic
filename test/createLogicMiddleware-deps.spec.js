@@ -1,4 +1,4 @@
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import * as Rx from 'rxjs'
 import expect from 'expect-legacy';
 import { createLogic, createLogicMiddleware } from '../src/index';
