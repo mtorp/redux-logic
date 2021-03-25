@@ -1,4 +1,4 @@
-import {take, map, delay} from 'rxjs/operators';
+import { take, map, delay } from 'rxjs/operators';
 import expect from 'expect-legacy';
 import * as Rx from 'rxjs'
 import { createLogic, createLogicMiddleware, configureLogic } from '../src/index';

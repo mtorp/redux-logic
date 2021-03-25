@@ -1,4 +1,4 @@
-import {debounceTime, throttleTime, share, filter, mergeMap} from 'rxjs/operators';
+import { debounceTime, throttleTime, share, filter, mergeMap } from 'rxjs/operators';
 import { merge, Observable } from 'rxjs';
 import createLogicAction$ from './createLogicAction$';
 import { confirmProps } from './utils';
