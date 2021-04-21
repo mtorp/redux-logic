@@ -1,4 +1,4 @@
-import {scan, takeWhile, map} from 'rxjs/operators';
+import { scan, takeWhile, map } from 'rxjs/operators';
 import { Observable, Subject, BehaviorSubject } from 'rxjs'; // eslint-disable-line no-unused-vars
 import wrapper from './logicWrapper';
 import { confirmProps, stringifyType } from './utils';
