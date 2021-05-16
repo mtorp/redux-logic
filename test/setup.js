@@ -1,4 +1,5 @@
-import 'core-js/fn/promise';  // polyfill promise for tests
+// Another update of core-js using JSFix
+import 'core-js/features/promise';  // polyfill promise for tests
 
 /*
    Note do not import Rx in here since this file is used in
