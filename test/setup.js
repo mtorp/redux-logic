@@ -1,3 +1,4 @@
+// Another update of core-js using JSFix
 import 'core-js/features/promise';  // polyfill promise for tests
 
 /*
