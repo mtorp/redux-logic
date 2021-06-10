@@ -1,4 +1,4 @@
-import symbolObservable from 'symbol-observable';
+const symbolObservable = (Symbol && Symbol.observable) || '@@observable';
 
 // eslint-disable-next-line import/prefer-default-export
 export function confirmProps(obj, arrProps, objName = '') {
