@@ -1,4 +1,4 @@
-import Rx from 'rxjs';
+import * as Rx from 'rxjs'
 import expect from 'expect-legacy';
 import { createLogic, createLogicMiddleware } from '../src/index';
 
@@ -893,7 +893,7 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch) {
-          dispatch(Rx.Observable.of(actionBar, actionCat));
+          dispatch(Rx.of(actionBar, actionCat));
         }
       });
       mw = createLogicMiddleware([logicA]);
@@ -962,7 +962,7 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch) {
-          dispatch(Rx.Observable.of(actionBar, actionCat),
+          dispatch(Rx.of(actionBar, actionCat),
                    { allowMore: true });
           dispatch();
         }
@@ -1034,7 +1034,7 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch) {
-          dispatch(Rx.Observable.of(actionBar, actionCat),
+          dispatch(Rx.of(actionBar, actionCat),
                    { allowMore: true });
           dispatch(actionDog);
         }
@@ -1111,9 +1111,9 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch) {
-          dispatch(Rx.Observable.of(actionBar, actionCat),
+          dispatch(Rx.of(actionBar, actionCat),
                    { allowMore: true });
-          dispatch(Rx.Observable.of(actionDog, actionEgg),
+          dispatch(Rx.of(actionDog, actionEgg),
                    { allowMore: true });
           dispatch();
         }
@@ -1195,9 +1195,9 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch) {
-          dispatch(Rx.Observable.of(actionBar, actionCat),
+          dispatch(Rx.of(actionBar, actionCat),
                    { allowMore: true });
-          dispatch(Rx.Observable.of(actionDog, actionEgg),
+          dispatch(Rx.of(actionDog, actionEgg),
                    { allowMore: true });
           dispatch(actionFig);
         }
@@ -1283,7 +1283,7 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch, done) {
-          dispatch(Rx.Observable.of(actionBar, actionCat));
+          dispatch(Rx.of(actionBar, actionCat));
           dispatch();
           done();
         }
@@ -1355,7 +1355,7 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch, done) {
-          dispatch(Rx.Observable.of(actionBar, actionCat));
+          dispatch(Rx.of(actionBar, actionCat));
           dispatch(actionDog);
           done();
         }
@@ -1432,8 +1432,8 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch, done) {
-          dispatch(Rx.Observable.of(actionBar, actionCat));
-          dispatch(Rx.Observable.of(actionDog, actionEgg));
+          dispatch(Rx.of(actionBar, actionCat));
+          dispatch(Rx.of(actionDog, actionEgg));
           done();
         }
       });
@@ -1514,8 +1514,8 @@ describe('createLogicMiddleware-process', () => {
       logicA = createLogic({
         type: 'FOO',
         process(deps, dispatch, done) {
-          dispatch(Rx.Observable.of(actionBar, actionCat));
-          dispatch(Rx.Observable.of(actionDog, actionEgg));
+          dispatch(Rx.of(actionBar, actionCat));
+          dispatch(Rx.of(actionDog, actionEgg));
           dispatch(actionFig);
           done();
         }
