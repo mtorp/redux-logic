@@ -74,7 +74,8 @@
     "is-promise": "^2.1.0",
     "loose-envify": "^1.4.0",
     "rxjs": "^6.0.0",
-    "symbol-observable": "^1.2.0"
+    "symbol-observable": "^1.2.0",
+    "core-js": "^3.0.0"
   },
   "peerDependencies": {
     "redux": ">=3.5.2"
