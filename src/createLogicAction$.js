@@ -1,9 +1,10 @@
+import {timer, from, throwError, of} from 'rxjs';
 import isPromise from 'is-promise';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
+import 'rxjs/throwError';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/defaultIfEmpty';
 import 'rxjs/add/operator/do';
@@ -60,10 +61,9 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
     // will console.error if logic has not completed by the time it fires
     // warnTimeout can be set to 0 to disable
     if (NODE_ENV !== 'production' && warnTimeout) {
-      Observable.timer(warnTimeout)
+      timer(warnTimeout)
         // take until cancelled, errored, or completed
-        .takeUntil(cancelled$.defaultIfEmpty(true))
-        .do(() => {
+        .takeUntil(cancelled$.defaultIfEmpty(true)).tap(() => {
           // eslint-disable-next-line no-console
           console.error(`warning: logic (${name}) is still running after ${warnTimeout / 1000}s, forget to call done()? For non-ending logic, set warnTimeout: 0`);
         })
@@ -73,8 +73,7 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
     const dispatch$ = (new Subject())
           .mergeAll()
           .takeUntil(cancel$);
-    dispatch$
-      .do(
+    dispatch$.tap(
         mapToActionAndDispatch, // next
         mapErrorToActionAndDispatch // error
       )
@@ -179,9 +178,9 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
         dispatch$.next( // create obs for mergeAll
           // eslint-disable-next-line no-nested-ternary
           (isObservable(act)) ? act :
-          (isPromise(act)) ? Observable.fromPromise(act) :
-          (act instanceof Error) ? Observable.throw(act) :
-          Observable.of(act)
+          (isPromise(act)) ? from(act) :
+          (act instanceof Error) ? throwError(act) :
+          of(act)
         );
       }
       if (!(dispatchMultiple || allowMore)) { dispatch$.complete(); }
@@ -289,7 +288,7 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
           // eslint-disable-next-line no-console
           console.error(`unhandled exception in logic named: ${name}`, err);
           // wrap in observable since might not be an error object
-          dispatch(Observable.throw(err));
+          dispatch(throwError(err));
         }
       } else { // not processing, must have been a reject
         dispatch$.complete();
