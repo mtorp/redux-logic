@@ -62,8 +62,7 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
     if (NODE_ENV !== 'production' && warnTimeout) {
       Observable.timer(warnTimeout)
         // take until cancelled, errored, or completed
-        .takeUntil(cancelled$.defaultIfEmpty(true))
-        .do(() => {
+        .takeUntil(cancelled$.defaultIfEmpty(true)).tap(() => {
           // eslint-disable-next-line no-console
           console.error(`warning: logic (${name}) is still running after ${warnTimeout / 1000}s, forget to call done()? For non-ending logic, set warnTimeout: 0`);
         })
@@ -73,8 +72,7 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
     const dispatch$ = (new Subject())
           .mergeAll()
           .takeUntil(cancel$);
-    dispatch$
-      .do(
+    dispatch$.tap(
         mapToActionAndDispatch, // next
         mapErrorToActionAndDispatch // error
       )
