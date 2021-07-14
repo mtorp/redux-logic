@@ -1,9 +1,10 @@
+import {take, defaultIfEmpty, takeUntil, tap, mergeAll} from 'rxjs/operators';
 import isPromise from 'is-promise';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
+import 'rxjs/throwError';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/defaultIfEmpty';
 import 'rxjs/add/operator/do';
@@ -42,8 +43,7 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
   const logicAction$ = Observable.create(logicActionObs => {
     // create notification subject for process which we dispose of
     // when take(1) or when we are done dispatching
-    const cancelled$ = (new Subject())
-          .take(1);
+    const cancelled$ = (new Subject()).pipe(take(1));
     cancel$.subscribe(cancelled$); // connect cancelled$ to cancel$
     cancelled$
       .subscribe(
@@ -60,24 +60,17 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
     // will console.error if logic has not completed by the time it fires
     // warnTimeout can be set to 0 to disable
     if (NODE_ENV !== 'production' && warnTimeout) {
-      Observable.timer(warnTimeout)
-        // take until cancelled, errored, or completed
-        .takeUntil(cancelled$.defaultIfEmpty(true))
-        .do(() => {
+      Observable.timer(warnTimeout).pipe(takeUntil(cancelled$.pipe(defaultIfEmpty(true))), tap(() => {
           // eslint-disable-next-line no-console
           console.error(`warning: logic (${name}) is still running after ${warnTimeout / 1000}s, forget to call done()? For non-ending logic, set warnTimeout: 0`);
-        })
+        }))
         .subscribe();
     }
 
-    const dispatch$ = (new Subject())
-          .mergeAll()
-          .takeUntil(cancel$);
-    dispatch$
-      .do(
-        mapToActionAndDispatch, // next
-        mapErrorToActionAndDispatch // error
-      )
+    const dispatch$ = (new Subject()).pipe(mergeAll(), takeUntil(cancel$));
+    dispatch$.pipe(tap(// next
+    mapToActionAndDispatch, // error
+    mapErrorToActionAndDispatch))
       .subscribe({
         error: (/* err */) => {
           monitor$.next({ action, name, op: 'end' });
@@ -311,8 +304,7 @@ export default function createLogicAction$({ action, logic, store, deps, cancel$
     }
 
     start();
-  })
-  .takeUntil(cancel$)
+  }).pipe(takeUntil(cancel$))
   .take(1);
 
   return logicAction$;
