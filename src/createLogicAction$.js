@@ -1,5 +1,5 @@
 import isPromise from 'is-promise';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/of';
