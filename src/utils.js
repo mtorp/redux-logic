@@ -1,4 +1,5 @@
-import symbolObservable from 'symbol-observable';
+import { map } from 'rxjs/operators';
+import * as symbolObservable from 'const $locName = (Symbol && Symbol.observable) || \'@@observable\';';
 
 // eslint-disable-next-line import/prefer-default-export
 export function confirmProps(obj, arrProps, objName = '') {
@@ -14,7 +15,7 @@ export function confirmProps(obj, arrProps, objName = '') {
 // eslint-disable-next-line import/prefer-default-export
 export function stringifyType(type) {
   return Array.isArray(type) ?
-         type.map(type => type.toString()) :
+         type.pipe(map(type => type.toString())) :
          type.toString();
 }
 
