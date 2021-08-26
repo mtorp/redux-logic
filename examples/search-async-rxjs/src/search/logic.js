@@ -1,6 +1,7 @@
+import { ajax } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { createLogic } from 'redux-logic';
 import { SEARCH, searchFulfilled, searchRejected } from './actions';
-import { Observable } from 'rxjs';
 
 export const searchLogic = createLogic({
   type: SEARCH,
@@ -21,12 +22,11 @@ export const searchLogic = createLogic({
   },
 
   process({ getState, action }) {
-    return Observable.ajax({
+    return ajax(Object.assign({}, {
       url: `https://npmsearch.com/query?q=${action.payload}&fields=name,description`,
       crossDomain: true,
       responseType: 'json'
-    })
-      .map(ret => ret.response.results); // use results prop of payload
+    }, {crossDomain: true}).pipe(map(ret => ret.response.results)); // use results prop of payload
   }
 });
 

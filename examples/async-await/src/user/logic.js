@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs/operators';
 import { createLogic } from 'redux-logic';
 import { USER_PROFILE_FETCH, USER_PROFILE_FETCH_CANCEL, userProfileFetchFulfilled,
          userProfileFetchRejected } from './actions';
@@ -15,11 +16,10 @@ export const userProfFetchLogic = createLogic({
   process({ httpClient, action }, dispatch, done) {
     const uid = action.payload;
     fetchUserWithProfile(httpClient, uid)
-      .then(user => dispatch(userProfileFetchFulfilled(user)))
-      .catch(err => {
+      .then(user => dispatch(userProfileFetchFulfilled(user))).pipe(catchError(err => {
         console.error(err); // might be a render err
         dispatch(userProfileFetchRejected(err))
-      })
+      }))
       .then(() => done()); // call when finished dispatching
   }
 });

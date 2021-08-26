@@ -1,3 +1,4 @@
+import { concat } from 'rxjs';
 import { key, USERS_FIELD_UPDATED, USERS_FIELD_INVALID,
          USERS_ADD_SUCCESS, USERS_ADD_FAILED } from './actions';
 
@@ -66,7 +67,7 @@ export default function reducer(state = initialState, action) {
         errors: [],
         valid: false,
         message: 'user added successfully',
-        list: state.list.concat(user)
+        list: concat(state.list, user)
       };
     }
   case USERS_ADD_FAILED:
@@ -74,7 +75,7 @@ export default function reducer(state = initialState, action) {
       const err = action.payload;
       return {
         ...state,
-        errors: state.errors.concat(err.message),
+        errors: concat(state.errors, err.message),
         message: ''
       };
     }

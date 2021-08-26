@@ -1,7 +1,7 @@
 
+import { of, throwError } from 'rxjs';
 import expect from 'expect';
 import { usersFetchLogic } from '../src/users/logic';
-import { Observable } from 'rxjs';
 
 describe('usersFetchLogic', () => {
   describe('using valid url', () => {
@@ -9,7 +9,7 @@ describe('usersFetchLogic', () => {
     beforeEach((done) => {
       const httpClient = {
         getJSON(url) {
-          return Observable.of({
+          return of({
             data: [{ id: 1 }] // match shape of api of reqres.in
           });
         }
@@ -39,7 +39,7 @@ describe('usersFetchLogic', () => {
     beforeEach((done) => {
       const httpClient = {
         getJSON(url) {
-          return Observable.throw(new Error('not found 404'));
+          return throwError(new Error('not found 404'));
         }
       };
 

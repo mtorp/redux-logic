@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs/operators';
 import { createLogic } from 'redux-logic';
 import { USERS_FETCH, USERS_FETCH_CANCEL, usersFetchFulfilled,
          usersFetchRejected } from './actions';
@@ -16,11 +17,10 @@ export const usersFetchLogic = createLogic({
     // the delay query param adds arbitrary delay to the response
     httpClient.get(`https://reqres.in/api/users?delay=${delay}`)
       .then(resp => resp.data.data) // use data property of payload
-      .then(users => dispatch(usersFetchFulfilled(users)))
-      .catch((err) => {
+      .then(users => dispatch(usersFetchFulfilled(users))).pipe(catchError((err) => {
         console.error(err); // might be a render err
         dispatch(usersFetchRejected(err))
-      })
+      }))
       .then(() => done());
   }
 });

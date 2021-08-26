@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs/operators';
 import { createLogic } from 'redux-logic';
 import { USERS_FIELD_UPDATED, USERS_ADD, usersFieldInvalid,
          usersAddSuccess, usersAddFailed } from './actions';
@@ -74,11 +75,10 @@ export const usersAddLogic = createLogic({
     const fields = userSel.fields(state);
     httpClient.post('https://reqres.in/api/users', fields)
       .then(resp => resp.data) // new user created is returned
-      .then(user => dispatch(usersAddSuccess(user)))
-      .catch(err => {
+      .then(user => dispatch(usersAddSuccess(user))).pipe(catchError(err => {
         console.error(err); // might be a render err
         dispatch(usersAddFailed(err))
-      })
+      }))
       .then(() => done()); // call when done dispatching
   }
 });

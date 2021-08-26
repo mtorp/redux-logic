@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs/operators';
 import { createLogic } from 'redux-logic';
 import { SEARCH, searchFulfilled, searchRejected } from './actions';
 
@@ -19,11 +20,10 @@ export const searchLogic = createLogic({
   process({ httpClient, getState, action }, dispatch, done) {
     httpClient.get(`https://npmsearch.com/query?q=${action.payload}&fields=name,description`)
       .then(resp => resp.data.results) // use results property of payload
-      .then(results => dispatch(searchFulfilled(results)))
-      .catch((err) => {
+      .then(results => dispatch(searchFulfilled(results))).pipe(catchError((err) => {
         console.error(err); // might be a render err
         dispatch(searchRejected(err))
-      })
+      }))
       .then(() => done()); // call done when finished dispatching
   }
 });

@@ -1,4 +1,5 @@
 
+import { catchError } from 'rxjs/operators';
 import expect from 'expect';
 import { usersFetchLogic } from '../src/users/logic';
 
@@ -41,11 +42,10 @@ describe('usersFetchLogic', () => {
         }
       };
 
-      usersFetchLogic.process({ httpClient })
-        .catch(err => {
+      usersFetchLogic.process({ httpClient }).pipe(catchError(err => {
           rejectedValue = err;
           done();
-        });
+        }));
     });
 
     it('should reject to a 404 error', () => {

@@ -1,4 +1,5 @@
-import Rx from 'rxjs';
+import { map } from 'rxjs/operators';
+import * as Rx from 'rxjs'
 import { createLogic } from 'redux-logic';
 
 import { TIMER_START, TIMER_CANCEL, TIMER_RESET, TIMER_END,
@@ -28,8 +29,7 @@ export const timerStartLogic = createLogic({
   // to determine what to dispatch. In this case we returned
   // an observable so it will dispatch any values that were emitted
   process(depObj) {
-    return Rx.Observable.interval(1000)
-             .map(() => timerDecrement()); // send timerDecrement actions
+    return Rx.interval(1000).pipe(map(() => timerDecrement())); // send timerDecrement actions
   }
 });
 

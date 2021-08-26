@@ -1,5 +1,7 @@
 process.env.NODE_ENV = 'development';
 
+const { map, filter } = require('rxjs/operators');
+
 var path = require('path');
 var chalk = require('chalk');
 var webpack = require('webpack');
@@ -81,12 +83,10 @@ function setupCompiler(port) {
     }
 
     var json = stats.toJson();
-    var formattedErrors = json.errors.map(message =>
-      'Error in ' + formatMessage(message)
-    );
-    var formattedWarnings = json.warnings.map(message =>
-      'Warning in ' + formatMessage(message)
-    );
+    var formattedErrors = json.errors.pipe(map(message =>
+      'Error in ' + formatMessage(message)));
+    var formattedWarnings = json.warnings.pipe(map(message =>
+      'Warning in ' + formatMessage(message)));
 
     if (hasErrors) {
       console.log(chalk.red('Failed to compile.'));
@@ -95,7 +95,7 @@ function setupCompiler(port) {
         // If there are any syntax errors, show just them.
         // This prevents a confusing ESLint parsing error
         // preceding a much more useful Babel syntax error.
-        formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
+        formattedErrors = formattedErrors.pipe(filter(isLikelyASyntaxError));
       }
       formattedErrors.forEach(message => {
         console.log(message);

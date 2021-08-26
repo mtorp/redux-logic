@@ -1,5 +1,7 @@
 process.env.NODE_ENV = 'production';
 
+const { filter, map } = require('rxjs/operators');
+
 var chalk = require('chalk');
 var fs = require('fs');
 var path = require('path');
@@ -27,9 +29,7 @@ webpack(config).run(function(err, stats) {
 
   console.log('File sizes after gzip:');
   console.log();
-  var assets = stats.toJson().assets
-    .filter(asset => /\.(js|css)$/.test(asset.name))
-    .map(asset => {
+  var assets = stats.toJson().assets.pipe(filter(asset => /\.(js|css)$/.test(asset.name)), map(asset => {
       var fileContents = fs.readFileSync(paths.appBuild + '/' + asset.name);
       var size = gzipSize(fileContents);
       return {
@@ -38,11 +38,11 @@ webpack(config).run(function(err, stats) {
         size: size,
         sizeLabel: filesize(size)
       };
-    });
+    }));
   assets.sort((a, b) => b.size - a.size);
 
   var longestSizeLabelLength = Math.max.apply(null,
-    assets.map(a => a.sizeLabel.length)
+    assets.pipe(map(a => a.sizeLabel.length))
   );
   assets.forEach(asset => {
     var sizeLabel = asset.sizeLabel;

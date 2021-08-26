@@ -19,6 +19,8 @@
 
 'use strict';
 
+const { catchError } = require('rxjs/operators');
+
 var net = require('net');
 
 var inject = function(port) {
@@ -74,10 +76,9 @@ function detect(port, fn) {
     _detect(port)
       .then(function(result) {
         _fn(null, result);
-      })
-      .catch(function(e) {
+      }).pipe(catchError(function(e) {
         _fn(e);
-      });
+      }));
   };
 
   return fn ? _detect_with_cb(fn) : _detect(port);

@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { key, NOTIFY_CREATE, NOTIFY_QUEUE, NOTIFY_REMOVE, NOTIFY_DISPLAY_QUEUED } from './actions';
 
 export const selectors = {
@@ -25,8 +26,7 @@ export default function reducer(state = initialState, action) {
   case NOTIFY_REMOVE :
     return {
       ...state,
-      messages: state.messages
-        .filter(m => action.payload.indexOf(m) === -1)
+      messages: state.messages.pipe(filter(m => action.payload.indexOf(m) === -1))
     };
   case NOTIFY_DISPLAY_QUEUED :
     {
@@ -34,7 +34,7 @@ export default function reducer(state = initialState, action) {
       return {
           ...state,
         messages: [...state.messages, ...msgs],
-        queue: state.queue.filter(m => msgs.indexOf(m) === -1)
+        queue: state.queue.pipe(filter(m => msgs.indexOf(m) === -1))
       };
     }
   default:
