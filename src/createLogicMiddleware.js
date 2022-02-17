@@ -44,7 +44,8 @@ export default function createLogicMiddleware(arrLogic = [], deps = {}) {
   const actionSrc$ = new Subject(); // mw action stream
   const monitor$ = new Subject(); // monitor all activity
   const lastPending$ = new BehaviorSubject({ op: OP_INIT });
-  monitor$.pipe(scan((acc, x) => { // append a pending logic count
+  monitor$.pipe(scan((acc, x) => { 
+      // append a pending logic count
       let pending = acc.pending || 0;
       switch (x.op) { // eslint-disable-line default-case
         case 'top' : // action at top of logic stack
