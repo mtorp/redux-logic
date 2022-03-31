@@ -1,10 +1,4 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/throttleTime';
+import { merge, Observable } from 'rxjs';
 import createLogicAction$ from './createLogicAction$';
 import { confirmProps } from './utils';
 
@@ -52,7 +46,7 @@ export default function logicWrapper(logic, store, deps, monitor$) {
           createLogicAction$({ action, logic, store, deps,
                                cancel$, monitor$ }));
 
-    return Observable.merge(
+    return merge(
       nonMatchingAction$,
       matchingAction$
     );
