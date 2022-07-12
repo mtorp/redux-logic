@@ -1,11 +1,5 @@
-import { Observable } from 'rxjs/Observable'; // eslint-disable-line no-unused-vars
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/takeWhile';
-import 'rxjs/add/operator/toPromise';
+import { scan, takeWhile, map, filter, reduce } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import wrapper from './logicWrapper';
 import { confirmProps, stringifyType } from './utils';
 
@@ -50,8 +44,7 @@ export default function createLogicMiddleware(arrLogic = [], deps = {}) {
   const actionSrc$ = new Subject(); // mw action stream
   const monitor$ = new Subject(); // monitor all activity
   const lastPending$ = new BehaviorSubject({ op: OP_INIT });
-  monitor$
-    .scan((acc, x) => { // append a pending logic count
+  monitor$.pipe(scan((acc, x) => { // append a pending logic count
       let pending = acc.pending || 0;
       switch (x.op) { // eslint-disable-line default-case
         case 'top' : // action at top of logic stack
@@ -74,7 +67,7 @@ export default function createLogicMiddleware(arrLogic = [], deps = {}) {
         ...x,
         pending
       };
-    }, { pending: 0 })
+    }, { pending: 0 }))
     .subscribe(lastPending$); // pipe to lastPending
 
   let savedStore;
@@ -121,10 +114,7 @@ export default function createLogicMiddleware(arrLogic = [], deps = {}) {
      @return {promise} promise resolves when all are complete
     */
   mw.whenComplete = function whenComplete(fn = identity) {
-    return lastPending$
-      // .do(x => console.log('wc', x)) /* keep commented out */
-      .takeWhile(x => x.pending)
-      .map((/* x */) => undefined) // not passing along anything
+    return lastPending$.pipe(takeWhile(x => x.pending), map((/* x */) => undefined))
       .toPromise()
       .then(fn);
   };
@@ -184,8 +174,8 @@ export default function createLogicMiddleware(arrLogic = [], deps = {}) {
       throw new Error(`duplicate logic, indexes: ${duplicateLogic}`);
     }
     // filter out any refs that match existing logic, then addLogic
-    const arrNewLogic = arrMergeLogic.filter(x =>
-      savedLogicArr.indexOf(x) === -1);
+    const arrNewLogic = arrMergeLogic.pipe(filter(x =>
+      savedLogicArr.indexOf(x) === -1));
     return mw.addLogic(arrNewLogic);
   };
 
@@ -220,12 +210,11 @@ function applyLogic(arrLogic, store, next, sub, actionIn$, deps,
 
   if (sub) { sub.unsubscribe(); }
 
-  const wrappedLogic = arrLogic.map((logic, idx) => {
+  const wrappedLogic = arrLogic.pipe(map((logic, idx) => {
     const namedLogic = naming(logic, idx + startLogicCount);
     return wrapper(namedLogic, store, deps, monitor$);
-  });
-  const actionOut$ = wrappedLogic.reduce((acc$, wep) => wep(acc$),
-                                         actionIn$);
+  }));
+  const actionOut$ = wrappedLogic.pipe(reduce((acc$, wep) => wep(acc$), actionIn$));
   const newSub = actionOut$.subscribe(action => {
     debug('actionEnd$', action);
     try {
